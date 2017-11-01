@@ -57,8 +57,29 @@ def filter(data, thre):
             lon = xOrigin + (col + 0.5) * pixelWidth #pixal center
             lat = yOrigin + (row + 0.5) * pixelHeight
             if data[row][col] > thre:
-                rst[(lon, lat)] = [row, col, data[row][col]]
+                rst[(row, col)] = [lon, lat, data[row][col]]
     return rst
+
+
+# 每个选择出来的点，计算和周围一定阈值内的点的球面距离
+def neighbor(rst, dist = 100):
+    foo = {}
+    for key in rst:
+        originX = key[0] - dist
+        originY = key[1] - dist
+        extend_key = []
+        for i in range(2 * dist + 1):
+            extend_key.append((originX, originY))
+            originX += 1
+            originY += 1
+        for j in extend_key:
+            if j in rst:
+                lon1, lat1, value1 = rst[key]
+                lon2, lat2, value2 = rst[j]
+                distance = haversine(lon1, lat1, lon2, lat2)
+                if (key, j) not in foo and (j, key) not in foo:
+                    foo[(key, j)] = [lon1, lat1, value1, lon2, lat2, value2, distance]
+    return foo
 
 
 def array2raster(newRasterfn, rasterOrigin, pixelWidth, pixelHeight, array):
