@@ -30,3 +30,9 @@ Extract urban boundary from open source datasets
 - Gomez-Lievano, A., Patterson-Lomba, O., & Hausmann, R. (2016). Explaining the prevalence, scaling and variance of urban phenomena. Nature Human Behaviour, 1, 0012.
 
 - Long, Y., Shen, Y., & Jin, X. (2016). Mapping block-level urban areas for all Chinese cities. Annals of the American Association of Geographers, 106(1), 96-113.
+
+- Jiang, B. (2015). Head/tail breaks for visualization of city structure and dynamics. Cities, 43, 69-77.
+
+- Liu, X., Hu, G., Ai, B., Li, X., & Shi, Q. (2015). A Normalized Urban Areas Composite Index (NUACI) based on combination of DMSP-OLS and MODIS for mapping impervious surface area. Remote Sensing, 7(12), 17168-17189.
+
+- Yang, Y., He, C., Zhang, Q., Han, L., & Du, S. (2013). Timely and accurate national-scale mapping of urban land in China using Defense Meteorological Satellite Program’s Operational Linescan System nighttime stable light data. Journal of Applied Remote Sensing, 7(1), 073535-073535.
