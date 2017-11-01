@@ -22,7 +22,7 @@ except RuntimeError, e:
     print 'Unable to open INPUT.tif'
     print e
     sys.exit(1)
-
+    
     
 # select tiff band
 try:
@@ -36,18 +36,16 @@ except RuntimeError, e:
     
 # get coord information
 transform = dataset.GetGeoTransform()
-cols = dataset.RasterXSize
-rows = dataset.RasterYSize
-
 xOrigin = transform[0] # top left x
 yOrigin = transform[3] # top left y
 pixelWidth = transform[1] # width pixal resolution
 pixelHeight = transform[5] # hight pixal resolution (negative value)
-
 print xOrigin, yOrigin, pixelWidth, pixelHeight
 
 
 # Transform the band value to array
+cols = dataset.RasterXSize
+rows = dataset.RasterYSize
 data = band.ReadAsArray(0, 0, cols, rows)
 
 def filter(data, thre):
