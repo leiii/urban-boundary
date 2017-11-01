@@ -10,38 +10,26 @@ https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
 """
 
 from osgeo import gdal, osr, ogr
+from math import radians, cos, sin, asin, sqrt
 import numpy as np
 import sys
 
 
-# open geotiff
-try:
-    dataset = gdal.Open("INPUT.tif")
-except Exception as e:
-    print e
-    
-    
-# select tiff band
-try:
-    band_num = 1
-    band = dataset.GetRasterBand(band_num) 
-except Exception as e:
-    print e
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
 
-    
-# get coord information
-transform = dataset.GetGeoTransform()
-xOrigin = transform[0] # top left x
-yOrigin = transform[3] # top left y
-pixelWidth = transform[1] # width pixal resolution
-pixelHeight = transform[5] # hight pixal resolution (negative value)
-print xOrigin, yOrigin, pixelWidth, pixelHeight
-
-
-# Transform the band value to array
-cols = dataset.RasterXSize
-rows = dataset.RasterYSize
-data = band.ReadAsArray(0, 0, cols, rows)
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    r = 6371 # Radius of earth in kilometers.
+    return c * r
 
 
 # 按一定band的阈值选择坐标点
@@ -57,7 +45,7 @@ def filter(data, thre):
 
 
 # 每个选择出来的点，计算和周围一定距离阈值内的点的球面距离
-def neighbor(rst, grid = 100):
+def neighbor(rst, grid):
     foo = {}
     for key in rst:
         originX = key[0] - grid
@@ -76,6 +64,17 @@ def neighbor(rst, grid = 100):
                     foo[(key, j)] = [lon1, lat1, value1, lon2, lat2, value2, distance]
     return foo
 
+
+# 点对之间的筛选条件
+def cluster(foo, dist):
+    final = {}
+    for key in foo:
+        if foo[key][6] <= dist:
+            if key[0] not in final:
+                final[key[0]] = 1
+            if key[1] not in final:
+                final[key[1]] = 1
+     return final
 
 
 def array2raster(newRasterfn, rasterOrigin, pixelWidth, pixelHeight, array):
@@ -98,18 +97,45 @@ def array2raster(newRasterfn, rasterOrigin, pixelWidth, pixelHeight, array):
 
 # test
 if __name__ == "__main__":
-    rasterOrigin = (-123.25745,45.43013)
-    pixelWidth = 10
-    pixelHeight = 10
+    # open geotiff
+    try:
+        dataset = gdal.Open("INPUT.tif")
+    except Exception as e:
+        print e
+    
+    # select tiff band
+    try:
+        band_num = 1
+        band = dataset.GetRasterBand(band_num) 
+    except Exception as e:
+        print e
+    
+    # get coord information
+    transform = dataset.GetGeoTransform()
+    xOrigin = transform[0] # top left x
+    yOrigin = transform[3] # top left y
+    pixelWidth = transform[1] # width pixal resolution
+    pixelHeight = transform[5] # hight pixal resolution (negative value)
+    print xOrigin, yOrigin, pixelWidth, pixelHeight
+
+
+    # Transform the band value to array
+    cols = dataset.RasterXSize
+    rows = dataset.RasterYSize
+    data = band.ReadAsArray(0, 0, cols, rows)
+    
+    # filter data
+    rst = filter(data, thre = 10)
+    foo = neighbor(rst, grid = 100)
+    final = cluster(foo, dist = 50)
+    print len(rst), len(foo), len(final)
+    
+    # export
+    rasterOrigin = (xOrigin, xOrigin)
     newRasterfn = 'test.tif'
-    array = np.array([[ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                      [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                      [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1],
-                      [ 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1],
-                      [ 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1],
-                      [ 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1],
-                      [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1],
-                      [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                      [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                      [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])
+    array = np.zeroz((rows, cols))
+    for row in range(len(data)):
+        for col in range(len(data[row])):
+            if (row, col) in final:
+                array[row][col] = 1
     array2raster(newRasterfn, rasterOrigin, pixelWidth, pixelHeight, array)
