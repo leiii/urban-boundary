@@ -28,3 +28,5 @@ Extract urban boundary from open source datasets
 - Gil, J. (2017). Street network analysis “edge effects”: Examining the sensitivity of centrality measures to boundary conditions. Environment and Planning B: Urban Analytics and City Science, 44(5), 819-836.
 
 - Gomez-Lievano, A., Patterson-Lomba, O., & Hausmann, R. (2016). Explaining the prevalence, scaling and variance of urban phenomena. Nature Human Behaviour, 1, 0012.
+
+- Long, Y., Shen, Y., & Jin, X. (2016). Mapping block-level urban areas for all Chinese cities. Annals of the American Association of Geographers, 106(1), 96-113.
