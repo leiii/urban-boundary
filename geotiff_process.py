@@ -12,27 +12,21 @@ https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
 from osgeo import gdal, osr, ogr
 import numpy as np
 import sys
-# this allows GDAL to throw Python Exceptions
-gdal.UserExceptions()
 
 
 # open geotiff
 try:
     dataset = gdal.Open("INPUT.tif")
-except RuntimeError, e:
-    print 'Unable to open INPUT.tif'
+except Exception as e:
     print e
-    sys.exit(1)
     
     
 # select tiff band
 try:
     band_num = 1
     band = dataset.GetRasterBand(band_num) 
-except RuntimeError, e:
-    print 'Band (% i) not found' % band_num
+except Exception as e:
     print e
-    sys.exit(1)
 
     
 # get coord information
