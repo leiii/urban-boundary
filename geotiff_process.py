@@ -3,7 +3,7 @@
 # Lei Dong
 
 """
-本脚本将GeoTiff格式的文件，按band的value筛选后，以{(lon, lat): value}形式输出
+本脚本将GeoTiff格式的文件，按band的value筛选后，以GeoTiff形式输出
 More about GDAL library, see:
 http://www.gdal.org/gdal_tutorial.html
 https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
