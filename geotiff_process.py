@@ -57,7 +57,7 @@ def filter(data, thre):
             lon = xOrigin + (col + 0.5) * pixelWidth #pixal center
             lat = yOrigin + (row + 0.5) * pixelHeight
             if data[row][col] > thre:
-                rst[(lon, lat)] = data[row][col]
+                rst[(lon, lat)] = [row, col, data[row][col]]
     return rst
 
 
