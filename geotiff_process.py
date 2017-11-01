@@ -9,18 +9,35 @@ http://www.gdal.org/gdal_tutorial.html
 https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
 """
 
-import numpy as np
 from osgeo import gdal
+import sys
+# this allows GDAL to throw Python Exceptions
+gdal.UserExceptions()
 
-dataset = gdal.Open('SEN14adjv1.tif')
 
+# open geotiff
+try:
+    dataset = gdal.Open("INPUT.tif")
+except RuntimeError, e:
+    print 'Unable to open INPUT.tif'
+    print e
+    sys.exit(1)
+
+    
+# select tiff band
+try:
+    band_num = 1
+    band = dataset.GetRasterBand(band_num) 
+except RuntimeError, e:
+    print 'Band (% i) not found' % band_num
+    print e
+    sys.exit(1)
+
+    
+# get coord information
+transform = dataset.GetGeoTransform()
 cols = dataset.RasterXSize
 rows = dataset.RasterYSize
-band = dataset.GetRasterBand(1) #选择数据通道
-transform = dataset.GetGeoTransform()
-
-# Transform the band value to array
-data = band.ReadAsArray(0, 0, cols, rows)
 
 xOrigin = transform[0] # top left x
 yOrigin = transform[3] # top left y
@@ -29,6 +46,9 @@ pixelHeight = transform[5] # hight pixal resolution (negative value)
 
 print xOrigin, yOrigin, pixelWidth, pixelHeight
 
+
+# Transform the band value to array
+data = band.ReadAsArray(0, 0, cols, rows)
 
 def filter(data, thre):
     rst = {}
