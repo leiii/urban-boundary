@@ -57,7 +57,7 @@ def filter(data, thre):
 
 
 # 每个选择出来的点，计算和周围一定距离阈值内的点的球面距离
-def neighbor(rst, gird = 100):
+def neighbor(rst, grid = 100):
     foo = {}
     for key in rst:
         originX = key[0] - grid
