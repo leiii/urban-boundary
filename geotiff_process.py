@@ -50,6 +50,7 @@ rows = dataset.RasterYSize
 data = band.ReadAsArray(0, 0, cols, rows)
 
 
+# 按一定band的阈值选择坐标点
 def filter(data, thre):
     rst = {}
     for row in range(len(data)):
@@ -61,14 +62,14 @@ def filter(data, thre):
     return rst
 
 
-# 每个选择出来的点，计算和周围一定阈值内的点的球面距离
-def neighbor(rst, dist = 100):
+# 每个选择出来的点，计算和周围一定距离阈值内的点的球面距离
+def neighbor(rst, gird = 100):
     foo = {}
     for key in rst:
-        originX = key[0] - dist
-        originY = key[1] - dist
+        originX = key[0] - grid
+        originY = key[1] - grid
         extend_key = []
-        for i in range(2 * dist + 1):
+        for i in range(2 * grid + 1):
             extend_key.append((originX, originY))
             originX += 1
             originY += 1
@@ -80,6 +81,7 @@ def neighbor(rst, dist = 100):
                 if (key, j) not in foo and (j, key) not in foo:
                     foo[(key, j)] = [lon1, lat1, value1, lon2, lat2, value2, distance]
     return foo
+
 
 
 def array2raster(newRasterfn, rasterOrigin, pixelWidth, pixelHeight, array):
