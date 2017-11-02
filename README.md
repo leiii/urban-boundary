@@ -36,3 +36,7 @@ Extract urban boundary from open source datasets
 - Liu, X., Hu, G., Ai, B., Li, X., & Shi, Q. (2015). A Normalized Urban Areas Composite Index (NUACI) based on combination of DMSP-OLS and MODIS for mapping impervious surface area. Remote Sensing, 7(12), 17168-17189.
 
 - Yang, Y., He, C., Zhang, Q., Han, L., & Du, S. (2013). Timely and accurate national-scale mapping of urban land in China using Defense Meteorological Satellite Program’s Operational Linescan System nighttime stable light data. Journal of Applied Remote Sensing, 7(1), 073535-073535.
+
+- Kriewald, S. (2016). Introduction to the City Clustering Algorithm. https://cran.r-project.org/web/packages/osc/vignettes/paper.pdf
+
+- Rozenfeld, H. D., Rybski, D., Andrade, J. S., Batty, M., Stanley, H. E., & Makse, H. A. (2008). Laws of population growth. Proceedings of the National Academy of Sciences of the United States of America, 105(48), 18702-7.
