@@ -9,10 +9,13 @@ http://www.gdal.org/gdal_tutorial.html
 https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
 """
 
+import numpy as np
+import rasterio
+import sys
 from osgeo import gdal, osr, ogr
 from math import radians, cos, sin, asin, sqrt
-import numpy as np
-import sys
+from rasterio.features import shapes
+from shapely.geometry import shape
 
 
 def haversine(lon1, lat1, lon2, lat2):
@@ -139,3 +142,18 @@ if __name__ == "__main__":
             if (row, col) in final:
                 array[row][col] = 1
     array2raster(newRasterfn, rasterOrigin, pixelWidth, pixelHeight, array)
+
+    
+# raster to vector (polygon)
+mask = None
+with rasterio.drivers():
+    with rasterio.open('test.tif') as src:
+        image = src.read(1) # first band
+        results = (
+        {'properties': {'raster_val': v}, 'geometry': s}
+        for i, (s, v) in enumerate(shapes(image, mask=mask, transform=src.affine)))
+
+        
+geoms = list(results)
+print geoms[0]
+print shape(geoms[0]['geometry'])
