@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Lei Dong
-# PKU
+# Email: arch.dongl@gmail.com
 
 """
 本脚本将GeoTiff格式的文件，按band的value筛选后，以GeoTiff形式输出
